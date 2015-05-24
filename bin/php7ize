@@ -154,13 +154,7 @@ class Converter {
   private $function_params = [];
   private function handleToken(array $token) {
     list($idx, $str, $line) = $token;
-//    if ($this->near_function) {
-//      $this->function_params[] = $token;
-//      return;
-//    }
 
-
-    //var_dump(token_name($idx));
     if (T_DOC_COMMENT == $idx) {
       $this->parseDocblock($str);
     }
@@ -173,11 +167,7 @@ class Converter {
     else {
       $this->addText($str);
     }
-    //var_dump($str);
-
-
-
-  }
+  } // handleToken
 
   private function addReturnAnnotation() {
     if (!$this->current_return_type) {
