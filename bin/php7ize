@@ -127,6 +127,13 @@ class Converter {
         else {
           $this->addText($part[1]);
           if ($part[0] !== T_WHITESPACE) {
+            if ($typehint != $part[1]) {
+              $this->warn(
+                "Docblock type '%s' does not match function signature type '%s'",
+                $typehint,
+                $part[1]
+              );
+            }
             $has_annotation = true;
           }
         }
