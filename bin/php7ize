@@ -102,6 +102,15 @@ class Converter {
   private function mungeParam($parts, $number) {
     $seen_var = false;
     $has_annotation = false;
+    if (isset($this->current_param_types[$number])) {
+      $typehint = $this->current_param_types[$number];
+    }
+    else {
+      $this->warn("No typehint in annotation");
+      array_map(function($part) { $this->add($part); }, $parts);
+      return;
+    }
+
     foreach ($parts as $part) {
       if ($seen_var) {
         $this->add($part);
@@ -110,9 +119,7 @@ class Converter {
         if ($part[0] === T_VARIABLE) {
           // figure out if we need to annotate
           if (!$has_annotation) {
-            if (isset($this->current_param_types[$number])) {
-              $this->addDocblockAnnotation($this->current_param_types[$number]);
-            }
+            $this->addDocblockAnnotation($typehint);
           }
           $seen_var = true;
           $this->addText($part[1]);
