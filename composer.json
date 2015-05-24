@@ -11,5 +11,8 @@
             "name": "Eric Stern",
             "email": "eric@ericstern.com"
         }
+    ],
+    "bin": [
+        "bin/php7ize"
     ]
 }
