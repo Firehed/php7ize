@@ -28,3 +28,16 @@ Use Composer's global update mechanism:
 Contributing
 -----
 Please see more information in CONTRIBUTING.md
+
+Future features
+-----
+All features are subject to change.
+Feel free to add a suggestion by adding a Github issue.
+
+* Drastically improve the internal implementation (use/access an AST?)
+* Improve/test type hint for variadic functions
+* Flag to add `declare(strict_types=1)`
+* Auto-rename PHP4-style constructors?
+* Replace deprecated PHP tags (<% <%= %>)
+* Null coalesce: Replace `isset($foo) ? $foo : DEFAULT` with `$foo ?? DEFAULT`
+* `mysql_` deprecation: replace with `mysqli_` equivalent
