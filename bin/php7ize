@@ -7,6 +7,12 @@ class Converter {
   private $source_file;
   private $output_file;
   private $should_echo;
+  private $is_quiet = false;
+
+  public function setIsQuiet($is_quiet) {
+    $this->is_quiet = $is_quiet;
+    return $this;
+  }
 
   public function setOutputFile($output_file) {
     $this->output_file = $output_file;
@@ -237,7 +243,15 @@ class Converter {
     return $this;
   }
 
+  /**
+   * @param string sprintf-style format string
+   *
+   * @return void
+   */
   private function warn($msg, ...$vars) {
+    if ($this->is_quiet) {
+      return;
+    }
     $yellow = "\033[0;33m";
     $black = "\033[0m";
     $format_str = sprintf("%s%s%s%s\n",
@@ -250,16 +264,17 @@ class Converter {
 
 }
 
-$opts = getopt('o:',
-  ['stdout', 'output-file:'])
+$opts = getopt('o:q',
+  ['stdout', 'output-file:', 'quiet'])
   + ['o' => null, 'output-file' => null];
 
 $output_file = $opts['o'] ?: $opts['output-file'];
 $to_stdout = isset($opts['stdout']);
-
+$is_quiet = isset($opts['quiet']) || isset($opts['q']);
 
 (new Converter())
   ->setSource(end($argv))
   ->setOutputFile($output_file)
   ->setEcho($to_stdout)
+  ->setIsQuiet($is_quiet)
   ->convert();
