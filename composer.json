@@ -5,6 +5,11 @@
         "firehed/arctools": "~1.0",
         "phpunit/phpunit": "~4.6"
     },
+    "autoload": {
+        "psr-4": {
+            "Firehed\\PHP7ize\\": ["src/", "tests/"]
+        }
+    },
     "license": "MIT",
     "authors": [
         {
