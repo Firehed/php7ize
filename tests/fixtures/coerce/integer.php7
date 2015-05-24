@@ -1,0 +1,6 @@
+<?php
+
+/**
+ * @param integer
+ */
+function takesInteger(int $integer) {}
