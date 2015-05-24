@@ -1,0 +1,13 @@
+<?php
+
+class X {
+
+  /**
+   * @param int Some counter
+   * @return string
+   */
+  public function hasParamRet(int $param): string {
+    return str_repeat(" ", $param);
+  }
+
+}
