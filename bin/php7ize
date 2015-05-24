@@ -199,7 +199,8 @@ class Converter {
     preg_match('#@return\s*(\w+)#', $docblock, $return_annotation);
     $this->current_return_type = $return_annotation ? $return_annotation[1] : '';
 
-    preg_match_all('#@param\s*(\w+)#', $docblock, $param_annotations);
+    // Escaping hell, the actual group is ([\\\w]+), meaning A-Za-z\
+    preg_match_all('#@param\s*([\\\\\w]+)#', $docblock, $param_annotations);
     $this->current_param_types = $param_annotations[1];
 
     $this->addText($docblock);
