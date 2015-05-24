@@ -19,5 +19,8 @@
     ],
     "bin": [
         "bin/php7ize"
-    ]
+    ],
+    "require": {
+        "ulrichsg/getopt-php": "~2.3"
+    }
 }

@@ -16,18 +16,81 @@ if (!$found) {
   fwrite(STDERR, "Composer autoload.php could not be located");
   exit(1);
 }
+
 require_once $loc;
 
-$opts = getopt('o:q',
-  ['stdout', 'output-file:', 'quiet'])
-  + ['o' => null, 'output-file' => null];
+use Ulrichsg\Getopt\Getopt;
+use Ulrichsg\Getopt\Option;
 
-$output_file = $opts['o'] ?: $opts['output-file'];
-$to_stdout = isset($opts['stdout']);
-$is_quiet = isset($opts['quiet']) || isset($opts['q']);
+function o( ...$args) {
+  return new Option(...$args);
+}
+
+$opts = new Getopt([
+  o('o', 'output-file', Getopt::REQUIRED_ARGUMENT),
+  o('q', 'quiet')->setDescription('Suppress warnings and errors from STDERR'),
+  o('h', 'help')->setDescription('Show help text and exit'),
+  o('v', 'version')->setDescription('Show the version and exit'),
+  o(null, 'stdout')->setDescription('Output converted text to STDOUT'),
+]);
+$opts->setBanner("Usage: %s [options] source_file\n\n");
+try {
+  $opts->parse();
+} catch (UnexpectedValueException $e) {
+  fwrite(STDERR, sprintf("%s\n\n%s",
+    $e->getMessage(),
+    $opts->getHelpText()
+  ));
+  exit(1);
+}
+
+if ($opts['help']) {
+  echo $opts->getHelpText();
+  exit();
+}
+
+if ($opts['version']) {
+  echo basename(__FILE__).' '.getVersion()."\n";
+  exit();
+}
+
+// This is probably a terrible way to do things. Oh well. I'd rather have one
+// source of truth: the Git tag
+function getVersion() {
+  $ds = DIRECTORY_SEPARATOR;
+  $git_dir = dirname(__DIR__).$ds.'.git';
+  if (!file_exists($git_dir)) {
+    return '(cannot be auto-detected)';
+  }
+  $tags = array_map(function($tag) {
+    return basename($tag);
+  }, glob("$git_dir{$ds}refs{$ds}tags{$ds}*"));
+  sort($tags); // This hopes the tag names are roughly sortable. Probably not great with semver semantics
+  $latest_tag = end($tags);
+
+  if (file_get_contents("$git_dir{$ds}refs{$ds}heads{$ds}master") ==
+    file_get_contents("$git_dir{$ds}refs{$ds}tags{$ds}{$latest_tag}")) {
+    return $latest_tag;
+  }
+  else {
+    return 'dev';
+  }
+} // getVersion
+
+$output_file = $opts['output-file'];
+$to_stdout = (bool)$opts['stdout'];
+$is_quiet = (bool)$opts['quiet'];
+$source_file = $opts->getOperand(0);
+if (null === $source_file) {
+  fwrite(STDERR, sprintf("%s\n\n%s",
+    'A source file is required.',
+    $opts->getHelpText()
+  ));
+  exit(1);
+}
 
 (new Firehed\PHP7ize\Converter())
-  ->setSource(end($argv))
+  ->setSource($source_file)
   ->setOutputFile($output_file)
   ->setEcho($to_stdout)
   ->setIsQuiet($is_quiet)
