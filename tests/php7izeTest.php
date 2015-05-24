@@ -3,7 +3,7 @@
 class php7izeTest extends \PHPUnit_Framework_TestCase {
 
   public function getFiles() {
-    $pattern = __DIR__.DIRECTORY_SEPARATOR.'fixtures/*.php5';
+    $pattern = __DIR__.DIRECTORY_SEPARATOR.'fixtures/**/*.php5';
     $files = [];
     foreach (glob($pattern) as $file) {
       $files[] = [$file];
