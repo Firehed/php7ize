@@ -1,0 +1,15 @@
+{
+    "name": "firehed/php7ize",
+    "description": "Tools to quickly add PHP7 features to your existing codebase",
+    "require-dev": {
+        "firehed/arctools": "~1.0",
+        "phpunit/phpunit": "~4.6"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eric Stern",
+            "email": "eric@ericstern.com"
+        }
+    ]
+}
