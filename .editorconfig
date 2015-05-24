@@ -6,6 +6,7 @@ indent_size = 2
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+max_line_length = 80
 
 ; Properties that aren't officially supported, but should be followed
 curly_bracket_next_line = false
