@@ -208,6 +208,7 @@ class Converter {
     // a capital letter, the script wanted a class of this name. Naming a class
     // as such is a bad idea, but we're going to assume that's what you wanted.
     if (in_array($annotation_str, self::$blacklisted_typehints)) {
+      $this->warn("Skipping blacklisted annotation '%s'", $annotation_str);
       return;
     }
     if (isset(self::$coercions[$annotation_str])) {
@@ -220,6 +221,17 @@ class Converter {
   private function addText($text) {
     $this->output .= $text;
     return $this;
+  }
+
+  private function warn($msg, ...$vars) {
+    $yellow = "\033[0;33m";
+    $black = "\033[0m";
+    $format_str = sprintf("%s%s%s%s\n",
+      $yellow,
+      "WARNING: ",
+      $black,
+      $msg);
+    fwrite(STDERR, vsprintf($format_str, $vars));
   }
 
 }
