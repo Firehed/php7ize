@@ -6,3 +6,17 @@ indent_size = 2
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+; Properties that aren't officially supported, but should be followed
+curly_bracket_next_line = false
+spaces_around_operators = true
+; Basically, follow PSR-2 for brackets, but opening braces ALWAYS are on the
+; same line, and the closing brace is ALWAYS followed by a newline
+
+
+[*.{md,mdown,markdown}]
+max_line_length = 9999
+
+[composer.json]
+indent_style = space
+indent_size = 4
