@@ -196,7 +196,7 @@ class Converter {
   private $current_return_type = '';
   private $current_param_types = [];
   private function parseDocblock($docblock) {
-    preg_match('#@return\s*(\w+)#', $docblock, $return_annotation);
+    preg_match('#@return\s*([\\\\\w]+)#', $docblock, $return_annotation);
     $this->current_return_type = $return_annotation ? $return_annotation[1] : '';
 
     // Escaping hell, the actual group is ([\\\w]+), meaning A-Za-z\

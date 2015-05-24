@@ -1,0 +1,12 @@
+<?php
+
+class X {
+
+  /**
+   * @return Foo\Bar a bar
+   */
+  public function returnFooBar(): Foo\Bar {
+    return new Foo\Bar();
+  }
+
+}
