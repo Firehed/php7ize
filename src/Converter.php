@@ -138,10 +138,10 @@ class Converter {
   private function handleToken(Token $token) {
     switch ($token->getType()) {
     case T_DOC_COMMENT:
-      $this->parseDocblock($token->getValue());
+      $this->parseDocblock($token);
       break;
     case T_FUNCTION:
-      $this->handleFunction($token->getValue());
+      $this->handleFunction($token);
       break;
     case T_WHITESPACE: // fall through
     default:
@@ -154,7 +154,8 @@ class Converter {
       return;
     }
     $return_annotation = sprintf(': %s', $this->current_return_type);
-    $this->add($return_annotation);
+    $tok = new Token($return_annotation);
+    $this->add($tok);
   }
 
   private $near_function = false;
@@ -165,7 +166,9 @@ class Converter {
 
   private $current_return_type = '';
   private $current_param_types = [];
-  private function parseDocblock($docblock) {
+  private function parseDocblock(Token $token) {
+    $docblock = (string)$token;
+
     preg_match('#@return\s*([\\\\\w]+)#', $docblock, $return_annotation);
     $this->current_return_type = $return_annotation ? $return_annotation[1] : '';
 
@@ -173,7 +176,7 @@ class Converter {
     preg_match_all('#@param\s*([\\\\\w]+)#', $docblock, $param_annotations);
     $this->current_param_types = $param_annotations[1];
 
-    $this->add($docblock);
+    $this->add($token);
   }
 
   private static $blacklisted_typehints = [
@@ -206,15 +209,16 @@ class Converter {
     if (isset(self::$coercions[$annotation_str])) {
       $annotation_str = self::$coercions[$annotation_str];
     }
-    $this->add(sprintf('%s ', $annotation_str));
+    $tok = new Token(sprintf('%s ', $annotation_str));
+    $this->add($tok);
   }
 
   private $output;
   /**
-   * @param Token|string thing to putput
+   * @param Token thing to putput
    * @return this
    */
-  private function add($tok) {
+  private function add(Token $tok) {
     $this->output .= (string)$tok;
     return $this;
   }
