@@ -213,6 +213,7 @@ class Converter {
     'integer' => 'int',
     'double' => 'float',
     'boolean' => 'bool',
+    'this' => 'self',
   ];
   private function addDocblockAnnotation($annotation_str) {
     // We're going to make a rather stupid assumption where if there's
