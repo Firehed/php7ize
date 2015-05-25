@@ -237,6 +237,7 @@ class Converter {
 
   /**
    * @param string sprintf-style format string
+   * @param mixed variables to be substitued in placeholders
    *
    * @return void
    */
