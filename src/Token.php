@@ -2,9 +2,11 @@
 
 namespace Firehed\PHP7ize;
 
-class Token {
+class Token implements StringlikeInterface {
 
-  private $type = 0;
+  const SINGLE_CHARACTER = 0;
+
+  private $type = self::SINGLE_CHARACTER;
   private $value = '';
   private $name = '';
 
