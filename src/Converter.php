@@ -32,15 +32,16 @@ class Converter {
   public function convert() {
     $tokens = token_get_all(file_get_contents($this->source_file));
 
-    foreach ($tokens as $token) {
+    foreach ($tokens as $raw_token) {
+      $token = new Token($raw_token);
       if ($this->near_function) {
-        if ($token === '(') {
-          $this->addText($token);
+        if ($token->is('(')) {
+          $this->add($token);
           $this->startParamCapture();
         }
         elseif ($this->capture_function_params) {
           $this->function_params[] = $token;
-          if ($token === ')') {
+          if ($token->is(')')) {
             $this->endFunctionMode();
           }
         }
@@ -50,25 +51,12 @@ class Converter {
         }
       }
       else {
-        if (is_array($token)) {
-          $this->handleToken($token);
-        }
-        else {
-          $this->addText($token);
-        }
+        $this->handleToken($token);
       }
     } // Token loop
 
     // render and output
     echo ($this->output);
-  }
-
-  private function add($token) {
-    if (is_array($token)) {
-      $this->addText($token[1]);
-    } else {
-      $this->addText($token);
-    }
   }
 
   private $capture_function_params = false;
@@ -93,10 +81,10 @@ class Converter {
     $param_no = 0;
     foreach ($this->function_params as $tok) {
       // Loop over the tokens, break into params
-      if ($tok === ',' || $tok === ')') {
+      if ($tok->is(',') || $tok->is(')')) {
         // process param
         $this->mungeParam($param_parts, $param_no);
-        $this->addText($tok);
+        $this->add($tok);
         $param_parts = [];
         $param_no++;
       } else {
@@ -121,51 +109,43 @@ class Converter {
       if ($seen_var) {
         $this->add($part);
       }
-      elseif (is_array($part)) {
-        if ($part[0] === T_VARIABLE) {
-          // figure out if we need to annotate
-          if (!$has_annotation) {
-            $this->addDocblockAnnotation($typehint);
-          }
-          $seen_var = true;
-          $this->addText($part[1]);
+      elseif ($part->getType() === T_VARIABLE) {
+        if (!$has_annotation) {
+          $this->addDocblockAnnotation($typehint);
         }
-        else {
-          $this->addText($part[1]);
-          if ($part[0] !== T_WHITESPACE) {
-            if ($typehint != $part[1]) {
-              $this->warn(
-                "Docblock type '%s' does not match function signature type '%s'",
-                $typehint,
-                $part[1]
-              );
-            }
-            $has_annotation = true;
-          }
-        }
-
+        $seen_var = true;
+        $this->add($part);
+      }
+      elseif ($part->getType() === T_WHITESPACE) {
+        $this->add($part);
       }
       else {
-        $this->addText($part);
+        $has_annotation = true;
+        $this->add($part);
+        if ($part->getValue() !== $typehint) {
+          // Issue warning
+          $this->warn(
+            "Docblock type '%s' does not match function signature type '%s'",
+            $typehint,
+            $part
+          );
+        }
       }
     }
   }
 
   private $function_params = [];
-  private function handleToken(array $token) {
-    list($idx, $str, $line) = $token;
-
-    if (T_DOC_COMMENT == $idx) {
-      $this->parseDocblock($str);
-    }
-    elseif (T_FUNCTION == $idx) {
-      $this->handleFunction($str);
-    }
-    elseif (T_WHITESPACE == $idx) {
-      $this->addText($str);
-    }
-    else {
-      $this->addText($str);
+  private function handleToken(Token $token) {
+    switch ($token->getType()) {
+    case T_DOC_COMMENT:
+      $this->parseDocblock($token->getValue());
+      break;
+    case T_FUNCTION:
+      $this->handleFunction($token->getValue());
+      break;
+    case T_WHITESPACE: // fall through
+    default:
+      $this->add($token);
     }
   } // handleToken
 
@@ -174,13 +154,13 @@ class Converter {
       return;
     }
     $return_annotation = sprintf(': %s', $this->current_return_type);
-    $this->addText($return_annotation);
+    $this->add($return_annotation);
   }
 
   private $near_function = false;
   private function handleFunction($funstr) {
     $this->near_function = true;
-    $this->addText($funstr);
+    $this->add($funstr);
   }
 
   private $current_return_type = '';
@@ -193,7 +173,7 @@ class Converter {
     preg_match_all('#@param\s*([\\\\\w]+)#', $docblock, $param_annotations);
     $this->current_param_types = $param_annotations[1];
 
-    $this->addText($docblock);
+    $this->add($docblock);
   }
 
   private static $blacklisted_typehints = [
@@ -226,12 +206,16 @@ class Converter {
     if (isset(self::$coercions[$annotation_str])) {
       $annotation_str = self::$coercions[$annotation_str];
     }
-    $this->addText(sprintf('%s ', $annotation_str));
+    $this->add(sprintf('%s ', $annotation_str));
   }
 
   private $output;
-  private function addText($text) {
-    $this->output .= $text;
+  /**
+   * @param Token|string thing to putput
+   * @return this
+   */
+  private function add($tok) {
+    $this->output .= (string)$tok;
     return $this;
   }
 
