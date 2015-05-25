@@ -12,6 +12,8 @@ class Converter {
   private $output_file;
   // Render to STDOUT?
   private $should_echo;
+  // Source file
+  private $source_file;
 
   public function setIsQuiet($is_quiet) {
     $this->is_quiet = $is_quiet;
