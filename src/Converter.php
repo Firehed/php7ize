@@ -4,10 +4,53 @@ namespace Firehed\PHP7ize;
 
 class Converter {
 
-  private $source_file;
-  private $output_file;
-  private $should_echo;
+  /**
+   * A list of reserved keywords that should never be allowed as typehints for
+   * parameters or return values.
+   *
+   * Based off of this:
+   * http://php.net/manual/en/reserved.other-reserved-words.php
+   *
+   */
+  private static $blacklisted_typehints = [
+    // Reserved keywords not implemented in STH
+    'mixed',
+    'resource',
+    'numeric',
+    'object',
+    // Non-reserved, but has a chance of becoming so. Preventative measure.
+    // This will break compatibility if there's a legit TH to a Scalar class
+    'scalar',
+    'null', // Meaningless
+    'false',
+    'true',
+  ];
+
+  /**
+   * A list of aliases commonly seen in type hints
+   */
+  private static $coercions = [
+    'integer' => 'int',
+    'double' => 'float',
+    'boolean' => 'bool',
+    'this' => 'self',
+  ];
+
+  // Suppress warnings and errors?
   private $is_quiet = false;
+  // Output buffer
+  private $output;
+  // Destination file
+  private $output_file;
+  // Render to STDOUT?
+  private $should_echo;
+
+  // Parse state values
+  private $capture_function_params = false;
+  private $current_return_type = '';
+  private $current_param_types = [];
+  private $function_params = [];
+  private $near_function = false;
 
   public function setIsQuiet($is_quiet) {
     $this->is_quiet = $is_quiet;
@@ -59,7 +102,6 @@ class Converter {
     echo ($this->output);
   }
 
-  private $capture_function_params = false;
   private function startParamCapture() {
     $this->capture_function_params = true;
   }
@@ -134,7 +176,6 @@ class Converter {
     }
   }
 
-  private $function_params = [];
   private function handleToken(Token $token) {
     switch ($token->getType()) {
     case T_DOC_COMMENT:
@@ -158,14 +199,11 @@ class Converter {
     $this->add($tok);
   }
 
-  private $near_function = false;
   private function handleFunction($funstr) {
     $this->near_function = true;
     $this->add($funstr);
   }
 
-  private $current_return_type = '';
-  private $current_param_types = [];
   private function parseDocblock(Token $token) {
     $docblock = (string)$token;
 
@@ -179,25 +217,6 @@ class Converter {
     $this->add($token);
   }
 
-  private static $blacklisted_typehints = [
-    // Reserved keywords not implemented in STH
-    'mixed',
-    'resource',
-    'numeric',
-    'object',
-    // Non-reserved, but has a chance of becoming so. Preventative measure.
-    // This will break compatibility if there's a legit TH to a Scalar class
-    'scalar',
-    'null', // Meaningless
-    'false',
-    'true',
-  ];
-  private static $coercions = [
-    'integer' => 'int',
-    'double' => 'float',
-    'boolean' => 'bool',
-    'this' => 'self',
-  ];
   private function addDocblockAnnotation($annotation_str) {
     // We're going to make a rather stupid assumption where if there's
     // a capital letter, the script wanted a class of this name. Naming a class
@@ -213,7 +232,6 @@ class Converter {
     $this->add($tok);
   }
 
-  private $output;
   /**
    * @param Token thing to putput
    * @return this
