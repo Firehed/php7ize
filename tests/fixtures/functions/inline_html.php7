@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @return string
+ */
+function space(): string {
+  return ' ';
+}
+
+?>
+<!DOCTYPE html>
+<html>
+  <?=space()?>
+</html>
+<?php
+// maybe more stuff
