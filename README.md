@@ -37,8 +37,4 @@ Feel free to add a suggestion by adding a Github issue.
 * Drastically improve the internal implementation (use/access an AST?)
 * Improve/test type hint for variadic functions
 * Add test coverage for interfaces, traits, and abstract classes
-* Flag to add `declare(strict_types=1)`
 * Auto-rename PHP4-style constructors?
-* Replace deprecated PHP tags (<% <%= %>)
-* Null coalesce: Replace `isset($foo) ? $foo : DEFAULT` with `$foo ?? DEFAULT`
-* `mysql_` deprecation: replace with `mysqli_` equivalent
