@@ -73,11 +73,16 @@ class ArgumentList {
   }
 
   private function addProvidedTypehint() {
+    if (!isset($this->provided_hints[$this->argno])) {
+      return;
+    }
     $provided_hint = $this->provided_hints[$this->argno];
     if (isset(self::$coercions[$provided_hint])) {
       $provided_hint = self::$coercions[$provided_hint];
     }
-    $this->tokens[] = $provided_hint.' ';
+    if (!in_array($provided_hint, self::$blacklisted_typehints)) {
+      $this->tokens[] = $provided_hint.' ';
+    }
   }
 
   public function __toString() {

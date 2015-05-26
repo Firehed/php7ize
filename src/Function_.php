@@ -4,6 +4,17 @@ namespace Firehed\PHP7ize;
 
 class Function_ implements StringlikeInterface {
 
+  /**
+   * A list of aliases commonly seen in type hints
+   */
+  private static $coercions = [
+    'integer' => 'int',
+    'double' => 'float',
+    'boolean' => 'bool',
+    'this' => 'self',
+  ];
+
+
   private $depth = 0;
   private $docblock;
   private $has_started = false;
@@ -94,10 +105,7 @@ private $head = [];
         $buf .= (string)$arglist;
         $in_args = false;
         $buf .= $token;
-        if ($this->return_type) {
-          $buf .= ': '.$this->return_type;
-        }
-
+        $buf .= $this->buildReturnType();
         continue;
       }
 
@@ -115,6 +123,19 @@ private $head = [];
   }
   private function renderBody() {
     return implode('', $this->body);
+  }
+
+  /**
+   * @return string
+   */
+  private function buildReturnType() {
+    if (!$this->return_type) {
+      return '';
+    }
+    if (isset(self::$coercions[$this->return_type])) {
+      $this->return_type = self::$coercions[$this->return_type];
+    }
+    return ': '.$this->return_type;
   }
 
 
