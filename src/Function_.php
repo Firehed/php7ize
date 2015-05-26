@@ -61,8 +61,19 @@ private $head = [];
 
   private function parseDocblock() {
     $docblock = (string)$this->docblock;
-    preg_match('#@return\s*([\\\\\w]+)#', $docblock, $return_annotation);
-    $this->return_type = $return_annotation ? $return_annotation[1] : '';
+    preg_match_all('#@return\s*([\\\\\w]+)#', $docblock, $return_annotations);
+    $matches = $return_annotations[1];
+    switch (count($matches)) {
+    case 0:
+      // No return type annotation
+      break;
+    case 1:
+      $this->return_type = $matches[0];
+      break;
+    default:
+      // Ambiguous, should raise a warning
+      break;
+    }
 
     // Escaping hell, the actual group is ([\\\w]+), meaning A-Za-z\
     preg_match_all('#@param\s*([\\\\\w]+)#', $docblock, $param_annotations);
