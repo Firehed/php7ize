@@ -4,9 +4,16 @@ namespace Firehed\PHP7ize;
 
 class Function_ implements StringlikeInterface {
 
+  private static $no_return_type_methods = [
+    '__construct',
+    '__destruct',
+    '__clone',
+  ];
+
   private $depth = 0;
   private $docblock;
   private $has_started = false;
+  private $name = '';
   private $no_op = false;
   private $track = true;
 
@@ -41,6 +48,11 @@ private $head = [];
     case T_FUNCTION:
       $this->track = false;
       break;
+    case T_STRING:
+      if (!$this->has_started) {
+        $this->name = $token->getValue();
+      }
+      // fall through
     default:
       if ($this->track) {
         $this->no_op = true;
@@ -130,6 +142,9 @@ private $head = [];
    */
   private function buildReturnType() {
     if (!$this->return_type) {
+      return '';
+    }
+    if (in_array(strtolower($this->name), self::$no_return_type_methods)) {
       return '';
     }
     if ($type = TypeFixer::fixType($this->return_type)) {
