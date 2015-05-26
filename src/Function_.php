@@ -4,17 +4,6 @@ namespace Firehed\PHP7ize;
 
 class Function_ implements StringlikeInterface {
 
-  /**
-   * A list of aliases commonly seen in type hints
-   */
-  private static $coercions = [
-    'integer' => 'int',
-    'double' => 'float',
-    'boolean' => 'bool',
-    'this' => 'self',
-  ];
-
-
   private $depth = 0;
   private $docblock;
   private $has_started = false;
@@ -132,10 +121,10 @@ private $head = [];
     if (!$this->return_type) {
       return '';
     }
-    if (isset(self::$coercions[$this->return_type])) {
-      $this->return_type = self::$coercions[$this->return_type];
+    if ($type = TypeFixer::fixType($this->return_type)) {
+      return ': '.$type;
     }
-    return ': '.$this->return_type;
+    return '';
   }
 
 

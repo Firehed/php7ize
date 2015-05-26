@@ -4,39 +4,6 @@ namespace Firehed\PHP7ize;
 
 class ArgumentList {
 
-  /**
-   * A list of reserved keywords that should never be allowed as typehints for
-   * parameters or return values.
-   *
-   * Based off of this:
-   * http://php.net/manual/en/reserved.other-reserved-words.php
-   *
-   */
-  private static $blacklisted_typehints = [
-    // Reserved keywords not implemented in STH
-    'mixed',
-    'resource',
-    'numeric',
-    'object',
-    // Non-reserved, but has a chance of becoming so. Preventative measure.
-    // This will break compatibility if there's a legit TH to a Scalar class
-    'scalar',
-    'null', // Meaningless
-    'false',
-    'true',
-  ];
-
-  /**
-   * A list of aliases commonly seen in type hints
-   */
-  private static $coercions = [
-    'integer' => 'int',
-    'double' => 'float',
-    'boolean' => 'bool',
-    'this' => 'self',
-  ];
-
-
   private $tokens = [];
   private $provided_hints = [];
   private $args = [];
@@ -77,11 +44,8 @@ class ArgumentList {
       return;
     }
     $provided_hint = $this->provided_hints[$this->argno];
-    if (isset(self::$coercions[$provided_hint])) {
-      $provided_hint = self::$coercions[$provided_hint];
-    }
-    if (!in_array($provided_hint, self::$blacklisted_typehints)) {
-      $this->tokens[] = $provided_hint.' ';
+    if ($type = TypeFixer::fixType($provided_hint)) {
+      $this->tokens[] = $type.' ';
     }
   }
 
