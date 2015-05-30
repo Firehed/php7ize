@@ -94,4 +94,5 @@ if (null === $source_file) {
   ->setOutputFile($output_file)
   ->setEcho($to_stdout)
   ->setIsQuiet($is_quiet)
+  ->addTransformer(new Firehed\PHP7ize\Transformers\FunctionAnnotater())
   ->convert();

@@ -45,12 +45,11 @@ class ArgumentList {
     }
     $provided_hint = $this->provided_hints[$this->argno];
     if ($type = TypeFixer::fixType($provided_hint)) {
-      $this->tokens[] = $type.' ';
+      $this->tokens[] = new Token($type.' ');
     }
   }
 
-  public function __toString() {
-    return implode('', $this->tokens);
+  public function getTokens() {
+    return $this->tokens;
   }
-
 }

@@ -95,29 +95,26 @@ private $head = [];
 
   private function renderHead() {
     if ($this->no_op) {
-      return implode('', $this->head);
+      return $this->head;
     }
     $this->parseDocblock();
-
-    $buffer = '';
-    $arg = null;
-    $argc = 0;
 
 
     $arglist = new ArgumentList($this->param_types);
     $in_args = false;
-    $buf = '';
+    $out = [];
+
     foreach ($this->head as $token) {
       if ($token->is('(')) {
         $in_args = true;
-        $buf .= (string)$token;
+        $out[] = $token;
         continue;
       }
       elseif ($token->is(')')) {
-        $buf .= (string)$arglist;
+        $out = array_merge($out, $arglist->getTokens());
         $in_args = false;
-        $buf .= $token;
-        $buf .= $this->buildReturnType();
+        $out[] = $token;
+        $out[] = $this->buildReturnType();
         continue;
       }
 
@@ -125,15 +122,14 @@ private $head = [];
         $arglist->addToken($token);
       }
       else {
-        $buf .= (string)$token;
+        $out[] = $token;
       }
     }
-    //var_dump($buf);
-    return $buf;
-
-
+    return $out;
   }
+
   private function renderBody() {
+    return $this->body;
     return implode('', $this->body);
   }
 
@@ -142,17 +138,20 @@ private $head = [];
    */
   private function buildReturnType() {
     if (!$this->return_type) {
-      return '';
+      return new Token('');
     }
     if (in_array(strtolower($this->name), self::$no_return_type_methods)) {
-      return '';
+      return new Token('');
     }
     if ($type = TypeFixer::fixType($this->return_type)) {
-      return ': '.$type;
+      return new Token(': '.$type);
     }
-    return '';
+    return new Token('');
   }
 
+  public function getTokens() {
+    return array_merge($this->renderHead(),$this->renderBody());
+  }
 
   public function __toString() {
     return $this->renderHead().$this->renderBody();

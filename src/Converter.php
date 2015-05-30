@@ -14,6 +14,13 @@ class Converter {
   private $should_echo;
   // Source file
   private $source_file;
+  // Transformers
+  private $transformers = [];
+
+  public function addTransformer(TransformerInterface $t) {
+    $this->transformers[] = $t;
+    return $this;
+  }
 
   public function setIsQuiet($is_quiet) {
     $this->is_quiet = $is_quiet;
@@ -36,32 +43,19 @@ class Converter {
   }
 
   public function convert() {
-    $tokens = token_get_all(file_get_contents($this->source_file));
+    $tokens = array_map(function($raw_token) {
+      return new Token($raw_token);
+    }, token_get_all(file_get_contents($this->source_file)));
 
-    $fn_block = null;
-    foreach ($tokens as $raw_token) {
-      $token = new Token($raw_token);
+    foreach ($this->transformers as $transformer) {
+      $tokens = $transformer->transform($tokens);
+    }
 
-      // Effectively, capture everything from the start of a docblock until
-      // a closing bracket. Bracket depth is managed by the function capture
-      // object.
-      if ($token->getType() === T_DOC_COMMENT) {
-        $fn_block = new Function_();
-      }
-      if ($fn_block) {
-        $fn_block->addToken($token);
-        // When it considers itself done, add it to the output buffer and move
-        // on to the next one
-        if ($fn_block->isComplete()) {
-          $this->add($fn_block);
-          $fn_block = null;
-        }
-      }
-      else {
-        $this->add($token);
-      }
-    } // Token loop
-
+    foreach ($tokens as $t) {
+      $this->add($t);
+    }
+    echo $this->output;
+    return;
     // render and output
     echo ($this->output);
   }
