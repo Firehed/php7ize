@@ -21,7 +21,6 @@ class ArgumentList {
       break;
     case T_VARIABLE:
       if ($this->current_th) {
-        //var_dump($this->current_th);
       }
       else {
         $this->addProvidedTypehint();
@@ -31,7 +30,6 @@ class ArgumentList {
       $this->current_th .= $token;
       break;
     }
-    //echo "Arg $this->argno token is $token\n\n";
     $this->tokens[] = $token;
     if ($token->is(',')) {
       $this->argno++;

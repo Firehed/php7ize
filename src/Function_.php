@@ -2,7 +2,7 @@
 
 namespace Firehed\PHP7ize;
 
-class Function_ implements StringlikeInterface {
+class Function_ {
 
   private static $no_return_type_methods = [
     '__construct',
@@ -68,7 +68,7 @@ private $head = [];
   }
 
   public function isComplete() {
-    return $this->has_started && !$this->depth ;
+    return $this->has_started && !$this->depth;
   }
 
   private function parseDocblock() {
@@ -151,10 +151,6 @@ private $head = [];
 
   public function getTokens() {
     return array_merge($this->renderHead(),$this->renderBody());
-  }
-
-  public function __toString() {
-    return $this->renderHead().$this->renderBody();
   }
 
 }

@@ -55,9 +55,6 @@ class Converter {
       $this->add($t);
     }
     echo $this->output;
-    return;
-    // render and output
-    echo ($this->output);
   }
 
   /**
