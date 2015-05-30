@@ -65,7 +65,7 @@ function getVersion() {
   $tags = array_map(function($tag) {
     return basename($tag);
   }, glob("$git_dir{$ds}refs{$ds}tags{$ds}*"));
-  sort($tags); // This hopes the tag names are roughly sortable. Probably not great with semver semantics
+  usort($tags, 'version_compare');
   $latest_tag = end($tags);
 
   if (file_get_contents("$git_dir{$ds}refs{$ds}heads{$ds}master") ==
