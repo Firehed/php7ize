@@ -8,7 +8,6 @@ class Token implements StringlikeInterface {
 
   private $type = self::SINGLE_CHARACTER;
   private $value = '';
-  private $name = '';
 
   /**
    * @param mixed token from token_get_all
@@ -20,7 +19,6 @@ class Token implements StringlikeInterface {
     }
     else {
       $this->value = $token;
-//      $this->name = 'F_NONSTANDARD_TOKEN';
     }
   }
 
@@ -30,7 +28,6 @@ class Token implements StringlikeInterface {
    */
   private function parseToken(array $token) {
     list($this->type, $this->value) = $token;
-    $this->name = token_name($this->type);
   }
 
   /**
@@ -51,8 +48,10 @@ class Token implements StringlikeInterface {
    * @return string
    */
   public function getName() {
+    if (!$this->type) {
+      return 'F_NONSTANDARD_TOKEN';
+    }
     return token_name($this->type);
-    return $this->name;
   }
 
   /**
