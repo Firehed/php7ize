@@ -1,6 +1,8 @@
 <?php
 
-class php7izeTest extends \PHPUnit_Framework_TestCase {
+namespace Firehed\PHP7ize;
+
+class ConverterTest extends \PHPUnit_Framework_TestCase {
 
   public function getFiles() {
     $pattern = __DIR__.DIRECTORY_SEPARATOR.'fixtures/**/*.php5';
@@ -23,21 +25,11 @@ class php7izeTest extends \PHPUnit_Framework_TestCase {
   }
 
   private function convert($file) {
-    $project_root = dirname(__DIR__);
-    $bin = $project_root.DIRECTORY_SEPARATOR.
-      'bin'.DIRECTORY_SEPARATOR.
-      'php7ize';
-    $cmd = sprintf('%s --quiet --stdout %s',
-      $bin,
-      $file);
-    $out = [];
-    $ret = null;
-    exec($cmd, $out, $ret);
-    $out[] = ""; // Exec seems to swallow any trailing newline, breaking diffs
-    if ($ret) {
-      throw new \Exception("Command failed");
-    }
-    return implode("\n",$out);
+    $converter = new Converter();
+    return $converter
+      ->setSource($file)
+      ->addTransformer(new Transformers\FunctionAnnotater())
+      ->convert();
   }
 
 }
