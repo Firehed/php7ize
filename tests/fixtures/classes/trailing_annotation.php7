@@ -1,0 +1,22 @@
+<?php
+
+class Test {
+
+  /**
+   * This is an annotated function
+   * @return bool
+   */
+  public function returnTrue(): bool {
+    return true;
+  }
+
+/**
+ * This was left hanging
+ */
+}
+
+/**
+ * So was this
+ */
+
+exit();

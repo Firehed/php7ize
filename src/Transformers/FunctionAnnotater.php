@@ -40,6 +40,10 @@ class FunctionAnnotater
         $this->addToken($token);
       }
     } // Token loop
+    // Handle any dangling blocks
+    if ($fn_block) {
+      $this->addTokens($fn_block->getTokens());
+    }
 
     return $this->getTokens();
 
