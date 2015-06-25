@@ -1,6 +1,10 @@
 {
     "name": "firehed/php7ize",
     "description": "Tools to quickly add PHP7 features to your existing codebase",
+    "type": "plow-command",
+    "extra": [
+        "Firehed\\PHP7ize\\Runner"
+    ],
     "require-dev": {
         "firehed/arctools": "~1.0",
         "phpunit/phpunit": "~4.6"
@@ -21,6 +25,6 @@
         "bin/php7ize"
     ],
     "require": {
-        "ulrichsg/getopt-php": "~2.3"
+        "firehed/plow": "*"
     }
 }

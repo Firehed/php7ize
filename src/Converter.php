@@ -54,7 +54,7 @@ class Converter {
     foreach ($tokens as $t) {
       $this->add($t);
     }
-    echo $this->output;
+    return $this->output;
   }
 
   /**
