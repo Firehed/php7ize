@@ -14,11 +14,17 @@ class FunctionAnnotater
 
     $fn_block = null;
     foreach ($tokens as $token) {
-
       // Effectively, capture everything from the start of a docblock until
       // a closing bracket. Bracket depth is managed by the function capture
       // object.
       if ($token->getType() === T_DOC_COMMENT) {
+        // If we already had an incomplete docblock, it probably came from
+        // a file- or class-level docblock. Just append as-is and reset for the
+        // next one.
+        if ($fn_block) {
+          $this->addTokens($fn_block->getTokens());
+          $fn_block = null;
+        }
         $fn_block = new Function_();
       }
       if ($fn_block) {
