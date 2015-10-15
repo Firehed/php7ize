@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2de302583e4b94d02b586c968d5ef659",
+    "hash": "d1adfebe63716006ddf5892fc9c07dec",
+    "content-hash": "11243c884b38111972bda4f04c34dcb9",
     "packages": [
         {
             "name": "firehed/plow",
@@ -109,12 +110,12 @@
             "version": "v2.7.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Console.git",
+                "url": "https://github.com/symfony/console.git",
                 "reference": "564398bc1f33faf92fc2ec86859983d30eb81806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/564398bc1f33faf92fc2ec86859983d30eb81806",
+                "url": "https://api.github.com/repos/symfony/console/zipball/564398bc1f33faf92fc2ec86859983d30eb81806",
                 "reference": "564398bc1f33faf92fc2ec86859983d30eb81806",
                 "shasum": ""
             },
@@ -259,16 +260,16 @@
         },
         {
             "name": "firehed/arctools",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Firehed/arctools.git",
-                "reference": "986a3ead6d277a15a16c1b97507c5294841ffeb8"
+                "reference": "f3245b28e97233ffb04c6a495c8c1d8bffc0a0a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Firehed/arctools/zipball/986a3ead6d277a15a16c1b97507c5294841ffeb8",
-                "reference": "986a3ead6d277a15a16c1b97507c5294841ffeb8",
+                "url": "https://api.github.com/repos/Firehed/arctools/zipball/f3245b28e97233ffb04c6a495c8c1d8bffc0a0a0",
+                "reference": "f3245b28e97233ffb04c6a495c8c1d8bffc0a0a0",
                 "shasum": ""
             },
             "require-dev": {
@@ -291,7 +292,7 @@
                 }
             ],
             "description": "Easily integrate with Arcanist and libphutil",
-            "time": "2014-10-24 21:23:38"
+            "time": "2015-08-18 21:00:14"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
