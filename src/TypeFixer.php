@@ -52,6 +52,10 @@ class TypeFixer {
     if (in_array($type, self::$blacklisted_typehints)) {
       return '';
     }
+    // Look for types declared as X|Y, and skip adding a type for them
+    if (false !== strpos($type, '|')) {
+      return '';
+    }
 
     return $type;
   } // fixType

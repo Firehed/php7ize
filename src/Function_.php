@@ -87,8 +87,8 @@ private $head = [];
       break;
     }
 
-    // Escaping hell, the actual group is ([\\\w]+), meaning A-Za-z\
-    preg_match_all('#@param\s*([\\\\\w]+)#', $docblock, $param_annotations);
+    // Escaping hell, the actual group is ([\\\w|]+), meaning A-Za-z\|
+    preg_match_all('#@param\s*([\\\\\w|]+)#', $docblock, $param_annotations);
     $this->param_types = $param_annotations[1];
   }
 
