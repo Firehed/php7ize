@@ -22,11 +22,13 @@ class Runner implements CommandInterface {
     $output_file = $this->getOption('o');
     $transformed = (new Converter())
       ->setSource($source_file)
-      ->setOutputFile($output_file)
       ->addTransformer(new Transformers\FunctionAnnotater())
       ->convert();
     if ($this->getOption('stdout')) {
-      $this->output->writeLine($transformed);
+      $this->output->writeLine('%s', $transformed);
+    }
+    if ($output_file) {
+      file_put_contents($output_file, $transformed);
     }
   }
 

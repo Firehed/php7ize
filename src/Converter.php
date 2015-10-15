@@ -8,8 +8,6 @@ class Converter {
   private $is_quiet = false;
   // Output buffer
   private $output;
-  // Destination file
-  private $output_file;
   // Render to STDOUT?
   private $should_echo;
   // Source file
@@ -24,11 +22,6 @@ class Converter {
 
   public function setIsQuiet($is_quiet) {
     $this->is_quiet = $is_quiet;
-    return $this;
-  }
-
-  public function setOutputFile($output_file) {
-    $this->output_file = $output_file;
     return $this;
   }
 
