@@ -8,8 +8,6 @@ class Converter {
   private $is_quiet = false;
   // Output buffer
   private $output;
-  // Render to STDOUT?
-  private $should_echo;
   // Source file
   private $source_file;
   // Transformers
@@ -22,11 +20,6 @@ class Converter {
 
   public function setIsQuiet($is_quiet) {
     $this->is_quiet = $is_quiet;
-    return $this;
-  }
-
-  public function setEcho($should_echo) {
-    $this->should_echo = $should_echo;
     return $this;
   }
 

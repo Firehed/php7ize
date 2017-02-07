@@ -89,10 +89,16 @@ if (null === $source_file) {
   exit(1);
 }
 
-(new Firehed\PHP7ize\Converter())
+$data = (new Firehed\PHP7ize\Converter())
   ->setSource($source_file)
-  ->setOutputFile($output_file)
-  ->setEcho($to_stdout)
   ->setIsQuiet($is_quiet)
   ->addTransformer(new Firehed\PHP7ize\Transformers\FunctionAnnotater())
   ->convert();
+
+if ($to_stdout) {
+  fwrite(STDOUT, $data);
+}
+
+if ($output_file) {
+  file_put_contents($output_file, $data);
+}
