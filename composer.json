@@ -3,7 +3,7 @@
     "description": "Tools to quickly add PHP7 features to your existing codebase",
     "require-dev": {
         "firehed/arctools": "~1.0",
-        "phpunit/phpunit": "^5.0"
+        "phpunit/phpunit": "^5.4"
     },
     "autoload": {
         "psr-4": {

@@ -2,7 +2,9 @@
 
 namespace Firehed\PHP7ize;
 
-class ConverterTest extends \PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class ConverterTest extends TestCase {
 
   public function getFiles() {
     $pattern = __DIR__.DIRECTORY_SEPARATOR.'fixtures/**/*.php5';
