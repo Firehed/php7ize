@@ -3,7 +3,7 @@
 
 // Find autoloader
 $found = false;
-foreach (['.', '..', '../..'] as $dir) {
+foreach (['.', '..', '../..', '../../..', '../../../../'] as $dir) {
   $loc = __DIR__.DIRECTORY_SEPARATOR.
     $dir.DIRECTORY_SEPARATOR.
     'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
